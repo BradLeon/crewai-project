@@ -1,0 +1,23 @@
+[project]
+name = "content_creation_social_media"
+version = "0.1.0"
+description = "content_creation_social_media using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "crewai[tools]>=0.100.1,<1.0.0"
+]
+
+[project.scripts]
+content_creation_social_media = "content_creation_social_media.main:run"
+run_crew = "content_creation_social_media.main:run"
+train = "content_creation_social_media.main:train"
+replay = "content_creation_social_media.main:replay"
+test = "content_creation_social_media.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"

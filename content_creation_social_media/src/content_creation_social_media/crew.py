@@ -1,6 +1,10 @@
 from crewai import LLM, Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool, WebsiteSearchTool
+from crewai.memory import LongTermMemory
+
+
+
 # Warning control
 import warnings
 warnings.filterwarnings('ignore')
@@ -40,12 +44,14 @@ class ContentCreationSocialMedia():
 	#print(f"test environ:, {os.environ.values}" )
 
 	custom_llm = LLM(
-            model="deepseek/deepseek-chat",
-			api_key=os.environ['DEEPSEEK_API_KEY'],
+            model="openrouter/deepseek/deepseek-r1:free",
+			base_url="https://openrouter.ai/api/v1",
+			api_key=os.environ['OPENROUTER_API_KEY'],
             temperature=0.1
     )
 
-	print(f"test LLM api_key:, {os.environ['DEEPSEEK_API_KEY']}" )
+
+	print(f"test LLM api_key:, {os.environ['OPENROUTER_API_KEY']}" )
 
 	'''
 	SerperDevTool: Google Search SERP API

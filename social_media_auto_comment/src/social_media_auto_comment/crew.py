@@ -1,5 +1,6 @@
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
+from crewai_tools import VisionTool
 import os
 import logging
 
@@ -84,6 +85,7 @@ class SocialMediaAutoComment():
 			config=self.agents_config['multi_modal_understand_analyst'],
 			# multimodal=True, # 不要加，一加就报错。
 			llm=self.qwen_llm,
+			tools=[VisionTool(model=self.qwen_llm)],
 			verbose=True
 		)
 	

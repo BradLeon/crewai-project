@@ -57,7 +57,6 @@ class ImageCDNTool:
         cache_path = self.get_cached_image_path(url)
         print(f"缓存路径: {cache_path}")
         # 如果缓存存在，直接返回
-        
         if os.path.exists(cache_path):
             logging.info(f"使用缓存图像: {url}")
             with open(cache_path, 'rb') as f:
@@ -79,7 +78,6 @@ class ImageCDNTool:
         except Exception as e:
             logging.error(f"缓存图像失败: {str(e)}")
             print(f"缓存图像失败: {str(e)}")
-        
         # 返回None表示获取失败
         return None
     
@@ -117,7 +115,7 @@ class ImageCDNTool:
         
         return url
 
-    def get_image_cdn_url_v2(self, url):
+    def get_image_oss_url(self, url):
         '''
         上传图片到阿里云OSS,并返回CDN的(公开)url
         '''

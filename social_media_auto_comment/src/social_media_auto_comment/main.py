@@ -335,7 +335,14 @@ def run():
         ]
     }
     
-
+    # 预处理图片列表
+    if "image_list" in inputs and inputs["image_list"]:
+        image_list = []
+        for url in inputs["image_list"].split(","):
+            image_list.append(url)
+        inputs["image_list"] = image_list
+        
+    '''
     # 预处理图片列表
     if "image_list" in inputs and inputs["image_list"]:
         image_messages = [
@@ -345,14 +352,14 @@ def run():
         # 处理每个图片URL
         for url in inputs["image_list"].split(","):
             image_cdn_tool = ImageCDNTool()
-            cdn_url = image_cdn_tool.get_image_cdn_url_v2(url)
+            cdn_url = image_cdn_tool.get_image_oss_url(url)
             print("cdn_url:", cdn_url)
             image_messages.append({
                     "type": "image_url",
                     "image_url": {"url": cdn_url}
                 })
         inputs["image_list"] = image_messages
-    
+    '''
     # 执行Crew
     try:
         result = SocialMediaAutoComment().crew().kickoff(inputs=inputs)

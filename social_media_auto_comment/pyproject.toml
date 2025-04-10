@@ -5,7 +5,12 @@ description = "social_media_auto_comment using crewAI"
 authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.10,<=3.13"
 dependencies = [
-    "crewai[tools]>=0.86.0,<1.0.0"
+    "crewai[tools]>=0.86.0,<1.0.0",
+    "hyperbrowser>=0.39.0",
+    "imagekitio>=2.2.8",
+    "langchain-hyperbrowser>=0.4.1",
+    "oss2>=2.19.1",
+    "playwright>=1.51.0",
 ]
 
 [project.scripts]

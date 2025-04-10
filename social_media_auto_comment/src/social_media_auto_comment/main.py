@@ -339,9 +339,12 @@ def run():
     if "image_list" in inputs and inputs["image_list"]:
         image_list = []
         for url in inputs["image_list"].split(","):
-            image_list.append(url)
+            # 如果需要上传CDN/云存储，最好在采集的时候做，否则每次运行agent都会重复上传。
+            image_cdn_tool = ImageCDNTool()
+            cdn_url = image_cdn_tool.get_image_oss_url(url)
+            image_list.append(cdn_url)
         inputs["image_list"] = image_list
-        
+
     '''
     # 预处理图片列表
     if "image_list" in inputs and inputs["image_list"]:

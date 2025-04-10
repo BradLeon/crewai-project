@@ -1,46 +1,28 @@
 multi_modal_understand_task:
   description: >
-    Analyze all image URL in the {image_list}.
-    For each image URL, describe what you see in detail.
-    Focus on key visual elements, text content, and overall theme.
+    分析图片内容，提取图片中的文字信息, 所有的 image URL 在{image_list}中.
+    对于每个 image URL, 描述你看到的细节，注意提取其中的品牌名、产品名, 成分, 功效,规格, 价格,适用场景, 适用人群,活动内容等信息(可自主延展).
+    多模态内容分析的结果，是为了后续组建知识库、知识图谱，以及为后续的专业化的自动回复提供信息支持。
 
-    
-    When describing each image, include the following aspects:
-    - Main objects or subjects in the image
-    - Scene or setting
-    - Colors and visual elements
-    - Any text visible in the image
-    - Overall mood or theme of the image
-    
-    Focus on providing accurate, detailed descriptions that could be useful for searching or categorizing these images.
   expected_output: >
-    A list containing image descriptions. Each image description contains the following information:
-    - image URL
-      - Main objects or subjects in the image
-      - Scene or setting
-      - Colors and visual elements
-      - Any text visible in the image
-      - Overall mood or theme of the image
-    
+    json格式，包含
+    --图片的url, 
+    --图片的分析描述信息。
   agent: multi_modal_understand_analyst
 
 
 auto_reply_task:
   description: >
-    
-    Take advantage of note title, desc, tag_list , content parsed from multi_modal_understand_task, and knowledge bases.
-    
-    Process all comments in the {comment_list}. Each comment has a 'content' field that contains the text of the comment.
-    
-    Iterate through each comment content: {{comment_list.content}}.
-    For the current comment, think about how to reply, ensuring that the reply is relevant to the context of the comment.
-    Use a human-like tone for the reply. For example, you can use emoticons and more natural, colloquial expressions.
-    Keep the generated reply to a maximum of 50 characters.
-    If the comment involves questions that require specific knowledge or are beyond your capabilities (e.g., specific product purchase links, complex after-sales issues, technical questions requiring professional answers, etc.), and you are unsure how to answer accurately, output \"Request manual intervention\" followed by a clear explanation of the specific reason why you believe manual intervention is necessary.
-    Encapsulate the original comment and your reply (or manual intervention request) into a dictionary with the keys 'comment' for the original comment and 'reply' for your response or manual intervention information.
-    Put all the comment-reply dictionaries into a list.
-    Return the final list containing all comment reply information.
+    充分利用{title}, {desc}, {tag_list}, 和图片多模态内容分析的结果，以及自由知识库（如有），生成回复。
+
+    处理{comment_list}中的每个评论，每个评论包含'content'字段，表示评论的内容。
+    对于每个评论，根据评论的内容，生成回复。
+    回复的内容，需要确保与评论的内容相关，并且使用人类化的语言，可以使用emoji等表情包，避免使用过于正式的措辞。
+    回复的内容，需要确保不超过50个字符。
+    如果评论涉及需要特定知识或超出您能力范围的问题（例如，特定的产品购买环节，复杂的售后问题，需要专业解答的技术问题等），而您不确定如何准确回答，则输出“请求人工干预”，然后清楚地解释您认为需要人工干预的具体原因。
+
   expected_output: >
-    A list containing reply information, where each element is a dictionary with two fields:
-    'comment' (the original comment) and 'reply' (the assistant's reply or manual intervention request).",
+    将原始评论和您的回复（或手动干预请求）封装到一个字典中，使用‘comment’键表示原始评论，‘reply’键表示您的回复或手动干预信息。
+    将所有注释-回复字典放入一个列表中。
+    返回包含所有评论回复信息的最终列表。
   agent: reply_assistant

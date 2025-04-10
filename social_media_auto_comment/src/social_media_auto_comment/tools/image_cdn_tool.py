@@ -10,11 +10,7 @@ from imagekitio import ImageKit
 import oss2
 #from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 
-# 配置日志级别
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+
 
 
 # 替换为你的 ImageKit 配置
@@ -73,11 +69,9 @@ class ImageCDNTool:
                 with open(cache_path, "wb") as f:
                     f.write(response.content)
                     b64_image = base64.b64encode(response.content).decode("utf-8")
-                    print(f"重新缓存图像: {url}")
                     return b64_image
         except Exception as e:
             logging.error(f"缓存图像失败: {str(e)}")
-            print(f"缓存图像失败: {str(e)}")
         # 返回None表示获取失败
         return None
     
@@ -90,9 +84,6 @@ class ImageCDNTool:
         b64_image = self.get_cached_imageB64(url)
 
         image_filename = self.get_image_filename(url)
-        print(f"image_filename: {image_filename}")
-        
-        #print(f"after b64_image encode")
         
         if b64_image is not None:
             # 上传图片到CDN（目前使用ImageKit.io,20GB免费）
@@ -107,7 +98,6 @@ class ImageCDNTool:
                 cdn_url = upload_response.get("response").get("url")
             except Exception as e:
                 logging.error(f"未获取到CDN图像链接: {str(e)}")
-                print(f"未获取到CDN图像链接: {str(e)}")
                 #返回原始的url
                 return url
             

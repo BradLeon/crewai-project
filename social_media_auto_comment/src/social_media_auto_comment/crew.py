@@ -2,11 +2,8 @@ from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import VisionTool
 from src.social_media_auto_comment.tools.custom_vision_tool import CustomVisionTool
-from crewai_tools import RagTool
-from crewai_tools import JSONSearchTool  # Updated import path
 
-from crewai.knowledge.source.text_file_knowledge_source import TextFileKnowledgeSource
-from embedchain.models.data_type import DataType
+
 
 from src.social_media_auto_comment.tools.faiss_retrival_tool import FAISSRetrievalTool
 
@@ -25,64 +22,6 @@ import logging
 #     "no_proxy": "localhost,127.0.0.1"
 # }
 
-
-
-# 设置知识库
-'''
-product_knowledge_source = TextFileKnowledgeSource(
-    file_paths=["product_info.txt"]
-)
-'''
-
-# 设置RAG工具
-
-
-'''
-rag_tool = RagTool()
-rag_tool.add(source="knowledge/comment_conversations_corpus.json", data_type="json")
-rag_tool.add(source="knowledge/product_info.txt", data_type=DataType.TEXT_FILE)
-'''
-
-
-# General JSON content search
-# This approach is suitable when the JSON path is either known beforehand or can be dynamically identified.
-
-# Restricting search to a specific JSON file
-# Use this initialization method when you want to limit the search scope to a specific JSON file.
-# tool = JSONSearchTool(json_path='knowledge/comment_conversations_corpus.json')
-'''
-tool = JSONSearchTool(
-	json_path='knowledge/comment_conversations_corpus.json',
-    config={
-        "llm": {
-            "provider": "openai",  # Other options include google, openai, anthropic, llama2, etc.
-            "config": {
-                "model": "gpt-4o-mini",
-                # Additional optional configurations can be specified here.
-                # temperature=0.5,
-                # top_p=1,
-                # stream=true,
-            },
-        },
-        "embedding_model": {
-            "provider": "openai", # or openai, ollama, ...
-            "config": {
-                "model": "text-embedding-3-small",
-                "task_type": "retrieval_document",
-                # Further customization options can be added here.
-            },
-        },
-    }
-)
-
-
-rag_tool = FAISSRetrievalTool(file_paths=["knowledge/comment_conversations_corpus.json", "knowledge/product_info.txt"])
-
-anwser1 = rag_tool.run(query="这是香薰机能用的精油还是身体精油?")
-print("RAG Tool query result 1: ", anwser1)
-anwser2 = rag_tool.run(query="感觉银河六律的成分都能稀释上脸了")
-print("RAG Tool query result 2: ", anwser2)
-'''
 
 
 @CrewBase

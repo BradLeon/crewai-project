@@ -51,7 +51,6 @@ class ImageCDNTool:
         '''
         # 创建URL的哈希作为文件名
         cache_path = self.get_cached_image_path(url)
-        print(f"缓存路径: {cache_path}")
         # 如果缓存存在，直接返回
         if os.path.exists(cache_path):
             logging.info(f"使用缓存图像: {url}")

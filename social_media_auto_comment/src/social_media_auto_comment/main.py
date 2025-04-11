@@ -14,13 +14,38 @@ from .tools.image_cdn_tool import ImageCDNTool
 # 设置全局代理
 os.environ['HTTP_PROXY'] = 'http://127.0.0.1:10080'
 os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:10080'
-os.environ['NO_PROXY'] = 'localhost,127.0.0.1'
 
 # 设置 requests 的代理和超时
 proxies = {
     'http': 'http://127.0.0.1:10080',
     'https': 'http://127.0.0.1:10080'
 }
+
+
+ # 方法1: 设置环境变量禁用遥测
+os.environ["OTEL_SDK_DISABLED"] = "true"
+os.environ["CREWAI_TRACKING"] = "false"
+
+
+# 禁用OpenTelemetry遥测
+# 方法2: 禁用特定库的日志
+import logging
+
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("crewai_debug.log"),
+        logging.StreamHandler()
+    ]
+)
+
+# 设置特定模块的日志级别
+logging.getLogger("opentelemetry").setLevel(logging.ERROR)
+# 提高CrewAI工具相关日志级别，捕获工具使用情况
+logging.getLogger("crewai.tools").setLevel(logging.DEBUG)
+logging.getLogger("crewai.agents").setLevel(logging.DEBUG)
 
 from social_media_auto_comment.crew import SocialMediaAutoComment
 # from src.social_media_auto_comment.crew import SocialMediaAutoComment
@@ -37,6 +62,8 @@ def run():
     """
     Run the crew.
     """
+
+    
     inputs = {
             "note_id": "67c97579000000000900f651",
             "type": "normal",
@@ -340,9 +367,10 @@ def run():
         image_list = []
         for url in inputs["image_list"].split(","):
             # 如果需要上传CDN/云存储，最好在采集的时候做，否则每次运行agent都会重复上传。
-            image_cdn_tool = ImageCDNTool()
-            cdn_url = image_cdn_tool.get_image_oss_url(url)
-            image_list.append(cdn_url)
+            #image_cdn_tool = ImageCDNTool()
+            #cdn_url = image_cdn_tool.get_image_oss_url(url)
+            #image_list.append(cdn_url)
+            image_list.append(url)
         inputs["image_list"] = image_list
 
     '''

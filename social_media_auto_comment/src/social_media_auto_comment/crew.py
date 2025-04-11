@@ -2,6 +2,14 @@ from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import VisionTool
 from src.social_media_auto_comment.tools.custom_vision_tool import CustomVisionTool
+from crewai_tools import RagTool
+from crewai_tools import JSONSearchTool  # Updated import path
+
+from crewai.knowledge.source.text_file_knowledge_source import TextFileKnowledgeSource
+from embedchain.models.data_type import DataType
+
+from src.social_media_auto_comment.tools.faiss_retrival_tool import FAISSRetrievalTool
+
 import os
 import logging
 
@@ -10,18 +18,72 @@ import logging
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
-# 设置代理配置
-PROXY_CONFIG = {
-    "http_proxy": "http://127.0.0.1:10080",
-    "https_proxy": "http://127.0.0.1:10080",
-    "no_proxy": "localhost,127.0.0.1"
-}
+# 注释掉代理配置
+# PROXY_CONFIG = {
+#     "http_proxy": "http://127.0.0.1:10080",
+#     "https_proxy": "http://127.0.0.1:10080",
+#     "no_proxy": "localhost,127.0.0.1"
+# }
 
-# 配置日志级别
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+
+# 设置知识库
+'''
+product_knowledge_source = TextFileKnowledgeSource(
+    file_paths=["product_info.txt"]
 )
+'''
+
+# 设置RAG工具
+
+
+'''
+rag_tool = RagTool()
+rag_tool.add(source="knowledge/comment_conversations_corpus.json", data_type="json")
+rag_tool.add(source="knowledge/product_info.txt", data_type=DataType.TEXT_FILE)
+'''
+
+
+# General JSON content search
+# This approach is suitable when the JSON path is either known beforehand or can be dynamically identified.
+
+# Restricting search to a specific JSON file
+# Use this initialization method when you want to limit the search scope to a specific JSON file.
+# tool = JSONSearchTool(json_path='knowledge/comment_conversations_corpus.json')
+'''
+tool = JSONSearchTool(
+	json_path='knowledge/comment_conversations_corpus.json',
+    config={
+        "llm": {
+            "provider": "openai",  # Other options include google, openai, anthropic, llama2, etc.
+            "config": {
+                "model": "gpt-4o-mini",
+                # Additional optional configurations can be specified here.
+                # temperature=0.5,
+                # top_p=1,
+                # stream=true,
+            },
+        },
+        "embedding_model": {
+            "provider": "openai", # or openai, ollama, ...
+            "config": {
+                "model": "text-embedding-3-small",
+                "task_type": "retrieval_document",
+                # Further customization options can be added here.
+            },
+        },
+    }
+)
+
+
+rag_tool = FAISSRetrievalTool(file_paths=["knowledge/comment_conversations_corpus.json", "knowledge/product_info.txt"])
+
+anwser1 = rag_tool.run(query="这是香薰机能用的精油还是身体精油?")
+print("RAG Tool query result 1: ", anwser1)
+anwser2 = rag_tool.run(query="感觉银河六律的成分都能稀释上脸了")
+print("RAG Tool query result 2: ", anwser2)
+'''
+
 
 @CrewBase
 class SocialMediaAutoComment():
@@ -48,10 +110,12 @@ class SocialMediaAutoComment():
 			api_key=os.environ['OPENROUTER_API_KEY'],
             temperature=0.1,
             config={
-                "proxies": PROXY_CONFIG,
                 "trust_env": True,
                 "verify": False,
-                "timeout": 60
+                "timeout": 180,  # 增加超时时间到3分钟
+                "max_retries": 3,  # 添加重试次数
+                "retry_interval": 5,  # 重试间隔秒数
+                "fail_on_rate_limit": False,  # 遇到限流时不立即失败
             }
     )
 
@@ -61,10 +125,11 @@ class SocialMediaAutoComment():
 			api_key=os.environ['GEMINI_API_KEY'],
             temperature=0.1,
             config={
-                "proxies": PROXY_CONFIG,
                 "trust_env": True,
                 "verify": False,
-                "timeout": 60
+                "timeout": 180,  # 增加超时时间到3分钟
+                "max_retries": 3,  # 添加重试次数
+                "retry_interval": 5,  # 重试间隔
             }
     )
 
@@ -86,7 +151,7 @@ class SocialMediaAutoComment():
 			config=self.agents_config['multi_modal_understand_analyst'],
 			# multimodal=True, # 不要加，一加就报错。
 			llm=self.custom_llm,
-			tools=[CustomVisionTool(model=self.qwen_llm)],
+			tools=[CustomVisionTool(model=self.custom_llm)],
 			verbose=True
 		)
 	
@@ -96,6 +161,9 @@ class SocialMediaAutoComment():
 			config=self.agents_config['reply_assistant'],
 			verbose=True,
 			llm=self.deepseek_llm,
+			# 临时注释掉知识源，使用RagTool替代
+			# knowledge_sources=[product_knowledge_source],
+			tools=[FAISSRetrievalTool(file_paths=["knowledge/comment_conversations_corpus.json", "knowledge/product_info.json"])],
 		)
 	
 	# To learn more about structured task outputs, 
@@ -114,7 +182,7 @@ class SocialMediaAutoComment():
 		return Task(
 			config=self.tasks_config['auto_reply_task'],
 			agent=self.reply_assistant(),
-			output_file='report.md'
+			output_file='report.md',
 		)
 	
 

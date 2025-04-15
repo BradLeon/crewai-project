@@ -1,0 +1,11 @@
+multi_modal_understand_task:
+  description: >
+    分析图片内容，提取图片中的文字信息, 所有的 image URL 在{image_list}中.
+    对于每个 image URL, 描述你看到的细节，注意提取其中的品牌名、产品名, 成分, 功效,规格, 价格,适用场景, 适用人群,活动内容等信息(可自主延展).
+    多模态内容分析的结果，是为了后续组建知识库、知识图谱，以及为后续的专业化的自动回复提供信息支持。
+
+  expected_output: >
+    json格式，包含
+    --图片的url, 
+    --图片的分析描述信息。
+  agent: multi_modal_understand_analyst

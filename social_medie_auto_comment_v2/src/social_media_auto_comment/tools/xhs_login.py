@@ -225,7 +225,7 @@ class XiaoHongShuLogin():
     async def save_cookies(self):
         """保存当前的cookies到文件"""
         cookies = await self.browser_context.cookies()
-        cookies_file = os.path.join(os.getcwd(), "browser_data", f"xhs_cookies_{config.PLATFORM}.json")
+        cookies_file = os.path.join(os.getcwd(), "browser_data", f"xhs_cookies.json")
 
         # 确保目录存在
         os.makedirs(os.path.dirname(cookies_file), exist_ok=True)
@@ -254,7 +254,7 @@ class XiaoHongShuLogin():
 
     async def load_saved_cookies(self):
         """从文件加载保存的cookies"""
-        cookies_file = os.path.join(os.getcwd(), "browser_data", f"xhs_cookies_{config.PLATFORM}.json")
+        cookies_file = os.path.join(os.getcwd(), "browser_data", f"xhs_cookies.json")
 
         if not os.path.exists(cookies_file):
             logger.info(f"[XiaoHongShuLogin.load_saved_cookies] Cookies file not found: {cookies_file}")

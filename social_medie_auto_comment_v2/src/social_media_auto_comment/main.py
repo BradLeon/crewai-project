@@ -338,7 +338,7 @@ class FlowState(BaseModel):
 class SocialMediaFlow(Flow[FlowState]):
     initial_state = FlowState
 
-    '''
+
     @start()
     def analyze_note(self):
         print("Kickoff the social media flow")
@@ -357,11 +357,10 @@ class SocialMediaFlow(Flow[FlowState]):
         logger.info(f"Image analysis result note_id: {self.state.note_id}")
         logger.info(f"Image analysis result note_url: {self.state.note_url}")
 
-       return output
-    '''
+        return output
 
-    #@listen(analyze_note)
-    @start()
+
+    @listen(analyze_note)
     def generate_replies(self):
         """第一步：生成评论回复"""
         logger.info("开始生成评论回复...")
@@ -422,7 +421,7 @@ class SocialMediaFlow(Flow[FlowState]):
                         "message": str(e)
                     })
                 # 更真实像人操作
-                time.sleep(1)
+                time.sleep(3)
 
             # 保存发布结果到state
             self.state.publish_results = results

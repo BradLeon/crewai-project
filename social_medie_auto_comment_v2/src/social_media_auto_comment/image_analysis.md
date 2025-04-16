@@ -4,150 +4,119 @@
     "image_url": "http://sns-img-hw.xhscdn.com/spectrum/1040g34o31f6tgalsmm0g5n3kkmfkcvh705l42lg!nd_dft_wlteh_jpg_3",
     "analysis": {
       "brand_name": "逐本",
-      "product_name": "复方精油档案",
-      "ingredients": "具体成分未在图中明确表示，需要进一步信息确认。",
-      "benefits": "可能与放松、舒缓、清新等效果相关，但具体功效需依赖产品说明书。",
-      "specifications": "瓶装精油，一般瓶装容量通常为10ml或15ml，但具体信息需求进一步确认。",
-      "price": "无法从图片中提取价格信息。",
-      "applicable_scenarios": "家庭使用、SPA、芳香疗法、瑜伽放松等。",
-      "target_audience": "爱好芳香疗法的人群、需要减压放松的人群、注重提升生活质量的消费者。",
-      "promotional_activities": "目前无活动信息显示于图中，可能需查看品牌官方网站或商家信息以获取相关促销活动信息。",
-      "additional_info": {
-        "storage_method": "避免阳光直射，保持干燥阴凉的储存环境。",
-        "usage_method": "可通过扩香器、按摩、沐浴时加入等方式使用。",
-        "precautions": "部分精油可能对皮肤敏感，使用前建议进行皮肤测试。孕妇、婴幼儿及特殊人群使用前请咨询医生。"
-      }
+      "product_name": "复方精油档案（可能是系列名称）",
+      "ingredients": "具体成分未提供，可能根据不同瓶子而有所不同",
+      "benefits": "放松、缓解压力、提升情绪和美容护肤等",
+      "specifications": "未明确说明，通常精油的规格可能为10ml或15ml等",
+      "price": "未载明价格，需查阅产品页面获取",
+      "application_scenarios": "家庭护理、spa、美容护肤、芳香疗法等",
+      "target_audience": "喜欢精油或香薰的人士",
+      "promotional_activities": "可能存在促销或搭配使用的建议"
     }
   },
   {
     "image_url": "http://sns-img-hw.xhscdn.com/spectrum/1040g34o31emdphlhks3g5n3kkmfkcvh7jh95jk8!nd_dft_wlteh_jpg_3",
     "analysis": {
-      "brand_name": "银河六律（假定名称，需验证）",
-      "product_name": "提升深睡（假定名称，需验证）",
-      "ingredients": {
-        "main_oils": [
-          "檀香精油",
-          "薰衣草精油",
-          "乳香精油",
-          "小花茉莉精油",
-          "红柚精油",
-          "当归浑油"
-        ]
-      },
-      "benefits": [
-        "有助于提升深度睡眠",
-        "放松心情，缓解压力"
+      "brand_name": "未知",
+      "product_name": "银河六律",
+      "ingredients": [
+        "檀香精油",
+        "薰衣草精油",
+        "冬青精油",
+        "乳香精油",
+        "小花茉莉精油",
+        "红柚精油",
+        "当归精油"
       ],
-      "specifications": "具体规格未明确说明，需进一步确认。",
-      "price": "具体价格未列出，需进一步确认。",
-      "applicable_scenarios": "睡前使用，适合需要提升睡眠质量的场合。",
-      "target_audience": [
-        "睡眠质量差的人群",
-        "感到焦虑或压力的人群"
-      ],
-      "promotional_activities": "宣传口号：芳菲散落人间梦，从此信步星河间",
-      "other": "香气特质：恬静花草香"
+      "benefits": "助力深度睡眠, 提升睡眠质量",
+      "specifications": "未知",
+      "price": "未知",
+      "application_scenarios": "睡前使用, 放松、减压时使用, 就寝环境的香氛布置",
+      "target_audience": "有睡眠困扰的人群, 需要放松和减压的人群",
+      "promotional_activities": "与提升睡眠质量相关，可能涉及一些推广活动"
     }
   },
   {
     "image_url": "http://sns-img-hw.xhscdn.com/spectrum/1040g34o31emdphlhks4g5n3kkmfkcvh75gd3r4o!nd_dft_wlteh_jpg_3",
     "analysis": {
-      "brand_name": "未明确给出品牌名",
-      "product_name": "清梦花精油",
+      "brand_name": "未明确提供",
+      "product_name": "梦清雅系列",
       "ingredients": [
-        "小花茶树精油",
-        "枇杷花精油",
+        "小花茶清油",
+        "瓶子花精油",
         "白兰花精油"
       ],
-      "benefits": [
-        "提供清新的气味，可以在不知不觉中放松身心。",
-        "有助于创造宁静舒适的环境。"
-      ],
-      "specifications": "图片中未提供具体的产品容量或规格信息。",
-      "price": "图片中没有显示价格信息。",
-      "applicable_scenarios": "适宜用在居家环境，如卧室、客厅等，可能用于香薰、泡澡等放松场景。",
-      "target_audience": "适合追求放松和舒适环境的人群，如忙碌的职场人士、学生等。",
-      "promotional_activities": "图片中的宣传语描绘了一种放松和享受生活的理念，可能涉及促销活动，但具体活动内容未提及。",
-      "other_extensions": [
-        "产品以植物精油为基础，强调其天然成分，可能适合有洁净和环保理念的消费者。",
-        "该产品可能还具有情绪疗法的功效，适合追求身心平衡的人士。"
-      ]
+      "benefits": "提供清新香气，可能有放松和舒缓的效果",
+      "specifications": "具体的产品规格未展示",
+      "price": "没有提供价格信息",
+      "application_scenarios": "适合用于家庭环境，可能用于芳香疗法或室内空气清新",
+      "target_audience": "通常适用于需要放松和改善室内气氛的人群",
+      "promotional_activities": "图片中的文字含有诗意描述，传达了一种清新、优雅的生活理念"
     }
   },
   {
     "image_url": "http://sns-img-hw.xhscdn.com/spectrum/1040g34o31emdphlhks405n3kkmfkcvh7j7tqu3g!nd_dft_wlteh_jpg_3",
     "analysis": {
-      "brand_name": "未明确提及",
-      "product_name": "香疗净化 (推测)",
+      "brand_name": "未具体提及品牌名",
+      "product_name": "香气净化油",
       "ingredients": [
-        "山脂梅精油",
+        "山莓梅精油",
         "艾叶精油",
         "柠檬精油",
         "尤加利精油"
       ],
-      "benefits": [
-        "净化空气，提升空间气氛。",
-        "净大地于心脏，循内律以拯杯，暗示有助于心理放松和调节身心状态。"
-      ],
-      "specifications": "未明确提及。",
-      "price": "未明确提及。",
-      "applicable_scenarios": "室内空气净化，可能适合于家居、办公室等空间。",
-      "target_audience": "可能适合对环境香气有需求的人群，如生活在城市中的上班族、家庭主妇等。",
-      "promotional_activities": "未明确提及，但可能涉及促销或体验活动。",
-      "other_information": "香气特质：地道草本香，强调自然清新的感觉。"
+      "benefits": "净化空气、提升空间的芳香气息",
+      "specifications": "未具体提及规格信息",
+      "price": "图片中未显示价格信息",
+      "application_scenarios": "家庭、办公室等室内空间的空气净化与芳香环境营造",
+      "target_audience": "一般适合所有人，尤其是需要空气清新的人群",
+      "promotional_activities": "特别提到香气特质为“地道草本香”，暗示可能有相关活动或推广"
     }
   },
   {
     "image_url": "http://sns-img-hw.xhscdn.com/spectrum/1040g34o31emdphlhks505n3kkmfkcvh7s3qfefg!nd_dft_wlteh_jpg_3",
     "analysis": {
-      "brand_name": "无法识别具体品牌名，但可能出现在瓶子标签或背景设计中。",
-      "product_name": "可能与“温柔香茗”或“香气”相关。",
+      "brand_name": "未明确标示",
+      "product_name": "可能为“温柔花香”或相关名称，具体名称未显示",
       "ingredients": [
         "玫瑰精油",
-        "小花香料精油",
+        "小花香草精油",
         "乳香精油",
         "依兰依兰精油",
         "薰衣草精油"
       ],
-      "benefits": "可能具有放松、舒缓、提升心情等效果。",
-      "specifications": "图片中未明示具体规格，可能需要查阅产品包装或官方网站。",
-      "price": "图片中并未提供价格信息。",
-      "applicable_scenarios": "适合家庭、办公室、Spa等场所的芳香氛围营造。",
-      "target_audience": "适合所有需要放松、舒缓情绪的用户，可能特别适合压力较大的工作人士或需要提升生活品质的人群。",
-      "promotional_activities": "图片中的文字提到“从抚慰中来，到攻坚中去”，可能暗示与放松及提高工作效率相关的促销活动。",
-      "other": "香气特质为“温柔花香”，可能吸引喜欢花香气味的用户。"
+      "benefits": "提供舒缓和放松的效果，调节情绪, 有助于应对压力",
+      "specifications": "未明确标示",
+      "price": "未明确标示",
+      "application_scenarios": "日常放松和情绪调节, 可在家中、办公室或任何需要舒缓压力的环境中使用",
+      "target_audience": "有压力和疲劳感的成年人, 喜欢芳香疗法或植物精油的人群",
+      "promotional_activities": "暂无明确的活动信息"
     }
   },
   {
     "image_url": "http://sns-img-hw.xhscdn.com/spectrum/1040g0k031enir9005u005n3kkmfkcvh7uvimsv8!nd_dft_wlteh_jpg_3",
     "analysis": {
-      "brand_name": "未明确显示",
+      "brand_name": "未显示，无法提取",
       "product_name": [
         "香屏净化精油 5mL",
-        "银丹苔精油 5mL",
-        "乳香精油 5mL",
-        "妕笑倚珍精油 5mL",
-        "保艾按摩油 30mL",
-        "守护按摩油 30mL"
+        "银冕仿香精油 5mL",
+        "牛乳香精油 5mL",
+        "妍妥无暇精油 5mL",
+        "保肤按摩油 30mL",
+        "守护按摩油 30mL",
+        "清梦三花精油 5mL",
+        "巧笑倩兮精油 5mL"
       ],
+      "ingredients": "普通香精成分未显示，具体成分需要品牌提供",
+      "benefits": "增强舒缓、保湿、净化等功效（推测，具体功效需要查证）",
+      "specifications": "各产品规格均为5mL或30mL",
       "price": {
-        "任选3瓶": "299元（具体产品及容量详见上面提及的产品）",
-        "清梦三花精油": {
-          "原价": "298元",
-          "现价": "199元"
-        },
-        "巧笑倚珍精油": {
-          "原价": "499元",
-          "现价": "399元"
-        }
+        "套餐价格": "¥299（任选3瓶）",
+        "清梦三花精油": "原价：¥298，特价：¥199",
+        "巧笑倩兮精油": "原价：¥499，特价：¥399"
       },
-      "specifications": {
-        "清梦三花精油": "5mL",
-        "巧笑倚珍精油": "5mL",
-        "其他精油": "容量也相同（5mL或30mL）"
-      },
-      "ingredients_and_benefits": "未详细列出，但涉及多种精油，通常含有天然植物提取物。从品牌及产品名称推测，可能包括放松、舒缓、按摩等。",
-      "applicable_scenarios": "产品适合于家庭护理"
+      "application_scenarios": "日常护肤、放松、按摩等",
+      "target_audience": "健康"
     }
   }
 ]

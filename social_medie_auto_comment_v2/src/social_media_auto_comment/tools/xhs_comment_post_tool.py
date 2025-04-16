@@ -6,15 +6,19 @@ import logging
 import asyncio
 import time
 from typing import Optional, Dict, Any, List
-from playwright.async_api import async_playwright, BrowserContext
+from playwright.async_api import BrowserContext, BrowserType, Page, async_playwright
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(current_path, '..', 'config')
+utils_path = os.path.join(current_path, '..', 'utils')
 sys.path.append(current_path)
 sys.path.append(config_path)
+sys.path.append(utils_path)
 
 from xhs_client import XiaoHongShuClient
 from xhs_login import XiaoHongShuLogin
+from xhs_help import convert_cookies
+from path_utils import get_lib_path
 import base_config as config
 
 # 配置日志
@@ -39,8 +43,8 @@ class XhsCommentPostTool:
     def __init__(self):
         """初始化属性"""
         self.index_url = "https://www.xiaohongshu.com"
-        self.user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-
+        # self.user_agent = utils.get_user_agent()
+        self.user_agent = config.UA if config.UA else "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
         # 私有属性
         self._browser_context = None
         self._page = None
@@ -49,170 +53,145 @@ class XhsCommentPostTool:
         self._initialized = False
         self._cookies = None
 
-    async def _load_cookies(self) -> bool:
-        """从文件加载cookies"""
+
+    async def start(self):
+        """启动浏览器"""
         try:
-            if os.path.exists(COOKIE_FILE):
-                with open(COOKIE_FILE, 'r', encoding='utf-8') as f:
-                    self._cookies = json.load(f)
-                    logger.info("成功加载已保存的cookies")
-                    return True
-            return False
-        except Exception as e:
-            logger.error(f"加载cookies失败: {e}")
-            return False
-
-    async def _save_cookies(self):
-        """保存cookies到文件"""
-        try:
-            if self._browser_context:
-                cookies = await self._browser_context.cookies()
-                with open(COOKIE_FILE, 'w', encoding='utf-8') as f:
-                    json.dump(cookies, f, ensure_ascii=False, indent=2)
-                logger.info("成功保存cookies")
-        except Exception as e:
-            logger.error(f"保存cookies失败: {e}")
-
-    async def _check_login_status(self) -> bool:
-        """
-        通过检查页面元素判断是否已登录
-        Returns:
-            bool: True 表示已登录，False 表示未登录
-        """
-        try:
-            # 检查是否存在"我"的导航元素（已登录状态）
-            try:
-                # 使用准确的 XPath
-                me_nav = await self._page.wait_for_selector(
-                    "xpath=//*[@id='global']/div[2]/div[1]/ul/li[4]/div/a",
-                    timeout=3000
-                )
-                if me_nav:
-                    # 进一步验证元素的文本内容
-                    element_text = await me_nav.text_content()
-                    if element_text and "我" in element_text:
-                        logger.info("检测到'我'的导航元素，已登录状态")
-                        return True
-
-            except Exception as e:
-                logger.debug(f"使用主XPath查找'我'元素失败: {e}")
-                # 如果主XPath失败，尝试备用选择器
-                try:
-                    me_nav = await self._page.wait_for_selector("text=我", timeout=2000)
-                    if me_nav:
-                        logger.info("通过文本内容检测到'我'元素，已登录状态")
-                        return True
-                except:
-                    pass
-
-            # 检查是否存在登录按钮（未登录状态）
-            try:
-                login_button = await self._page.wait_for_selector(
-                "xpath=//*[@id='app']/div[1]/div[2]/div[1]/ul/div[1]/button",
-                timeout=5000
-                )
-                if login_button:
-                    logger.info("检测到登录按钮，未登录状态")
-                    return False
-            except Exception as e:
-                logger.debug(f"查找登录按钮时出现异常: {e}")
-
-            # 如果无法确定状态，检查页面URL或其他特征
-            current_url = self._page.url
-            if "login" in current_url:
-                logger.info("当前在登录页面，未登录状态")
-                return False
-
-            logger.warning("无法确定登录状态，默认为未登录")
-            return False
-
-        except Exception as e:
-            logger.warning(f"检查登录状态时发生错误: {e}")
-            return False
-
-    async def initialize(self):
-        """初始化浏览器和登录"""
-        if self._initialized:
-            return
-
-        try:
-            logger.info("启动Playwright...")
+            playwright_proxy, httpx_proxy = None, None
             self._playwright = await async_playwright().start()
+            chromium = self._playwright.chromium
 
-            logger.info("启动浏览器...")
-            browser = await self._playwright.chromium.launch(
-                headless=config.HEADLESS,
-                timeout=60000
+            self._browser_context = await self.launch_browser(
+                chromium, None, self.user_agent, headless=config.HEADLESS
             )
 
-            self._browser_context = await browser.new_context(
-                viewport={"width": 1920, "height": 1080},
-                user_agent=self.user_agent
+            # 注入stealth.min.js
+            await self._browser_context.add_init_script(path=get_lib_path("stealth.min.js"))
+            # add webId cookie to avoid sliding captcha
+            await self._browser_context.add_cookies(
+                [
+                    {
+                        "name": "webId",
+                        "value": "xxx123",
+                        "domain": ".xiaohongshu.com",
+                        "path": "/",
+                    }
+                ]
             )
+            self._context_page = await self._browser_context.new_page()
+            await self._context_page.goto(self.index_url)
 
-            # 尝试加载已保存的cookies
-            if await self._load_cookies():
-                await self._browser_context.add_cookies(self._cookies)
-                logger.info("已加载保存的cookies")
+            # 创建客户端和尝试登录
+            self._xhs_client = await self.create_xhs_client(httpx_proxy)
+            login_successful = await self._xhs_client.pong()
+                            # 如果启用了保存登录状态但当前没有登录成功，尝试从保存的cookies登录
+            if not login_successful and config.SAVE_LOGIN_STATE:
+                login_obj = XiaoHongShuLogin(
+                    login_type="cookie",
+                    login_phone="",
+                    browser_context=self._browser_context,
+                    context_page=self._context_page,
+                    cookie_str=config.COOKIES,
+                )
+                # 尝试加载保存的cookies
+                cookies = await login_obj.load_saved_cookies()
+                if cookies:
+                    await self._browser_context.add_cookies(cookies)
+                    await self._context_page.reload()
+                    # 更新客户端cookies
+                    await self._xhs_client.update_cookies(browser_context=self._browser_context)
+                    login_successful = await self._xhs_client.pong()
 
-            # 创建页面并导航
-            self._page = await self._browser_context.new_page()
-            await self._page.goto(self.index_url)
+            # 如果仍未登录成功，使用配置的登录方式
+            if not login_successful:
+                login_obj = XiaoHongShuLogin(
+                    login_type=config.LOGIN_TYPE,
+                    login_phone="",
+                    browser_context=self._browser_context,
+                    context_page=self._context_page,
+                    cookie_str=config.COOKIES,
+                )
+                await login_obj.begin()
+                await self._xhs_client.update_cookies(browser_context=self._browser_context)
 
-            # 创建API客户端
-            self._xhs_client = await self._create_client()
-
-            # 检查登录状态
-            login_successful = await self._check_login_status()
-            if login_successful:
-                logger.info("使用已保存的cookies登录成功")
-                self._initialized = True
-                return
-
-            # 如果登录失败，才进行二维码登录
-            logger.info("需要登录，开始登录流程...")
-            login_handler = XiaoHongShuLogin(
-                login_type=config.LOGIN_TYPE,
-                login_phone="",
-                browser_context=self._browser_context,
-                context_page=self._page,
-                cookie_str=config.COOKIES
-            )
-            await login_handler.begin()
-            await self._xhs_client.update_cookies(browser_context=self._browser_context)
-            # 登录成功后保存cookies
-            await self._save_cookies()
+                # 如果启用了保存登录状态，保存cookies
+                if config.SAVE_LOGIN_STATE:
+                    await login_obj.save_cookies()
 
             self._initialized = True
             logger.info("初始化完成")
 
         except Exception as e:
-            logger.error(f"初始化失败: {e}", exc_info=True)
-            await self.cleanup()
+            logger.error(f"启动浏览器失败: {e}", exc_info=True)
             raise
 
-    async def _create_client(self):
-        """创建小红书API客户端"""
-        logger.info("创建小红书客户端...")
-        cookies = await self._browser_context.cookies()
+    async def create_xhs_client(self, httpx_proxy: Optional[str]) -> XiaoHongShuClient:
+        """Create xhs client"""
+        logger.info(
+            "[XiaoHongShuCrawler.create_xhs_client] Begin create xiaohongshu API client ..."
+        )
+        cookie_str, cookie_dict = convert_cookies(
+            await self._browser_context.cookies()
+        )
 
-        # 转换cookies为字符串和字典
-        cookie_str = '; '.join([f"{c['name']}={c['value']}" for c in cookies])
-        cookie_dict = {c['name']: c['value'] for c in cookies}
-
-        # 设置请求头
+        # 添加更多的请求头，使请求更接近真实浏览器
         headers = {
             "User-Agent": self.user_agent,
             "Cookie": cookie_str,
             "Origin": "https://www.xiaohongshu.com",
-            "Referer": "https://www.xiaohongshu.com"
+            "Referer": "https://www.xiaohongshu.com",
+            "Content-Type": "application/json;charset=UTF-8",
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "sec-ch-ua": '"Google Chrome";v="133", "Not(A:Brand";v="8", "Chromium";v="133"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"macOS"',
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
         }
 
-        return XiaoHongShuClient(
+        xhs_client_obj = XiaoHongShuClient(
+            proxies=httpx_proxy,
             headers=headers,
-            playwright_page=self._page,
-            cookie_dict=cookie_dict
+            playwright_page=self._context_page,
+            cookie_dict=cookie_dict,
         )
+        return xhs_client_obj
+
+    async def launch_browser(
+        self,
+        chromium: BrowserType,
+        playwright_proxy: Optional[Dict],
+        user_agent: Optional[str],
+        headless: bool = True
+    ) -> BrowserContext:
+        """Launch browser and create browser context"""
+        logger.info("[XiaoHongShuCrawler.launch_browser] Begin launch chromium browser ...")
+
+        if config.SAVE_LOGIN_STATE:
+            # feat issue #14
+            # we will save login state to avoid login every time
+            user_data_dir = os.path.join(
+                os.getcwd(), "browser_data", config.USER_DATA_DIR % config.PLATFORM
+            )  # type: ignore
+            browser_context = await chromium.launch_persistent_context(
+                user_data_dir=user_data_dir,
+                accept_downloads=True,
+                headless=headless,
+                proxy=playwright_proxy,  # type: ignore
+                viewport={"width": 1920, "height": 1080},
+                user_agent=user_agent,
+            )
+            return browser_context
+
+        else:
+            browser = await chromium.launch(headless=headless, proxy=playwright_proxy)  # type: ignore
+            browser_context = await browser.new_context(
+                viewport={"width": 1920, "height": 1080}, user_agent=user_agent
+            )
+            return browser_context
+
 
     async def post_comment(self, note_id: str, content: str, target_comment_id: Optional[str] = None) -> Dict[str, Any]:
         """
@@ -229,7 +208,7 @@ class XhsCommentPostTool:
         try:
             # 确保已初始化
             if not self._initialized:
-                await self.initialize()
+                await self.start()
 
             logger.info(f"发布评论: note_id={note_id}, content={content}, target_comment_id={target_comment_id}")
 
@@ -281,7 +260,7 @@ class XhsCommentPostTool:
 
     async def __aenter__(self):
         """异步上下文管理器入口"""
-        await self.initialize()
+        await self.start()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -300,7 +279,7 @@ async def main():
         # 发布主评论测试
         logger.info("\n1. 测试发布主评论...")
         result1 = await tool.post_comment(
-            note_id="67c97579000000000900f651",
+            note_id="6475ddce0000000012032250",
             content="这个笔记很有价值，学习了！[鼓掌R]"
         )
         logger.info(f"主评论发布结果:\n{json.dumps(result1, ensure_ascii=False, indent=2)}")

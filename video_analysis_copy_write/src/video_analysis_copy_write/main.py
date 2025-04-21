@@ -8,6 +8,28 @@ from .crews.video_analysis_crew import VideoAnalysisCrew, VideoAnalysisResult
 from .crews.video_copy_writer_crew import VideoCopyWriterCrew
 from .utils.video_processor import VideoProcessor
 
+from fastapi import FastAPI, HTTPException, Request
+from pydantic import BaseModel
+from dotenv import load_dotenv
+
+
+load_dotenv()  # 加载 .env 文件中环境变量
+
+app = FastAPI()
+
+@app.post("/run")
+async def run_crew(request: Request):
+    data = await request.json()
+    raw_video_share_text = data.get("raw_video_share_text", "https://v.douyin.com/kIMZC-M5A38/ 复制此链接，打开Dou音搜索，直接观看视频！")
+    account_position = data.get("account_position", "家具家装领域专业买手IP") 
+    video_topic = data.get("video_topic", "苏州地区的高品位全屋家具定制工厂探店")
+    target_audience = data.get("target_audience", "追求性价比和一站式解决便捷的装修业主")
+    flow = VideoCopyWriteFlow()
+    result = flow.kickoff(inputs={"raw_video_share_text": raw_video_share_text,
+                                  "account_position": account_position,
+                                  "video_topic": video_topic,
+                                  "target_audience": target_audience})
+    return {"result": result}
 
 
 class VideoCopyWriteState(BaseModel):
@@ -27,20 +49,12 @@ class VideoCopyWriteState(BaseModel):
 class VideoCopyWriteFlow(Flow[VideoCopyWriteState]):
 
     @start()
-    async def get_user_input(self):
-        '''获取用户输入信息
-        
-        
-        self.state.target_video_url = "oss://default/aimiaobi-service-prod/aimiaobi/videoAnalysis/1290225910686270_10695028/1290225910686270_1290225910686270_ae7cff20924c43c6818d727ceb694b2c.mp4"
-        self.state.account_position = "家具家装领域专业买手IP"
-        self.state.video_topic = "苏州地区的高品位全屋家具定制工厂探店"
-        self.state.target_audience = "追求性价比和一站式解决便捷的装修业主"
-        
-        '''
+    async def get_user_input(self, inputs : dict):
+        '''获取用户输入信息'''
         try:
             while True:
                 # 获取视频分享文本
-                share_text = input("请输入视频分享文本: ").strip()
+                share_text = inputs.get("raw_video_share_text", "")
                 if not share_text:
                     print("错误: 分享文本不能为空")
                     continue
@@ -49,7 +63,7 @@ class VideoCopyWriteFlow(Flow[VideoCopyWriteState]):
                 self.state.raw_video_share_text = share_text
                 
                 # 获取账号定位
-                account_positioning = input("请输入账号定位: ").strip()
+                account_positioning = inputs.get("account_position", "")
                 if not account_positioning:
                     print("错误: 账号定位不能为空")
                     continue
@@ -61,7 +75,7 @@ class VideoCopyWriteFlow(Flow[VideoCopyWriteState]):
                     continue
                     
                 # 获取目标受众
-                target_audience = input("请输入目标受众: ").strip()
+                target_audience = inputs.get("target_audience", "")
                 if not target_audience:
                     print("错误: 目标受众不能为空")
                     continue
@@ -246,7 +260,7 @@ class VideoCopyWriteFlow(Flow[VideoCopyWriteState]):
                             "video_analysis_report": self.state.video_analysis_report})
         )
 
-    async def run(self):
+    async def run(self, inputs : dict):
         '''
         执行视频分析和文案生成的主流程
         
@@ -263,14 +277,13 @@ class VideoCopyWriteFlow(Flow[VideoCopyWriteState]):
             
             # 获取用户输入
             print("正在获取用户输入...")
-            await self.get_user_input()
+            await self.get_user_input(inputs)
             print("用户输入获取完成")
 
             print("开始处理视频链接...")
             await self.process_video_url()
             print("视频链接处理完成")
 
-            '''
             # 执行视频分析
             print("开始视频分析...")
             await self.video_analysis()
@@ -282,13 +295,13 @@ class VideoCopyWriteFlow(Flow[VideoCopyWriteState]):
             print("视频文案生成完成")
             
             return result
-            '''
+            
         except Exception as e:
             print(f"执行过程中出现错误: {str(e)}")
             raise
 
 
-def kickoff():
+def kickoff(inputs : dict):
     '''
     启动视频分析和文案生成流程
     
@@ -303,7 +316,7 @@ def kickoff():
     '''
     try:
         poem_flow = VideoCopyWriteFlow()
-        asyncio.run(poem_flow.run())
+        asyncio.run(poem_flow.run(inputs))
     except asyncio.CancelledError:
         print("流程被取消")
     except Exception as e:
@@ -317,4 +330,7 @@ def plot():
 
 
 if __name__ == "__main__":
-    kickoff()
+    kickoff(inputs={"raw_video_share_text": "https://v.douyin.com/kIMZC-M5A38/ 复制此链接，打开Dou音搜索，直接观看视频！",
+                                  "account_position": "家具家装领域专业买手IP",
+                                  "video_topic": "苏州地区的高品位全屋家具定制工厂探店",
+                                  "target_audience": "追求性价比和一站式解决便捷的装修业主"})

@@ -1,0 +1,22 @@
+[project]
+name = "video_analysis_copy_write"
+version = "0.1.0"
+description = "video_analysis_copy_write using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<=3.13"
+dependencies = [
+    "alibabacloud-endpoint-util>=0.0.3",
+    "alibabacloud-quanmiaolightapp20240801>=2.7.1",
+    "alibabacloud-tea-openapi>=0.3.14",
+    "crewai[tools]>=0.86.0,<1.0.0",
+    "oss2>=2.19.1",
+    "playwright>=1.51.0",
+]
+
+[project.scripts]
+kickoff = "video_analysis_copy_write.main:kickoff"
+plot = "video_analysis_copy_write.main:plot"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
